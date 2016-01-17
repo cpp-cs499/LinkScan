@@ -1,5 +1,8 @@
 package cs499.parkin.linkscan;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.app.Activity;
@@ -9,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -23,6 +27,7 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
 
     private static final String KEY_IS_CAPTURING = "is_capturing";
 
+    private String urlStr = "https://api.ocr.space/Parse/Image";
     private Camera mCamera;
     private ImageView mCameraImage;
     private SurfaceView mCameraPreview;
@@ -79,6 +84,8 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         doneButton.setOnClickListener(mDoneButtonClickListener);
 
         mIsCapturing = true;
+
+
     }
 
     @Override
@@ -132,6 +139,11 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
     public void onPictureTaken(byte[] data, Camera camera) {
         mCameraData = data;
         setupImageDisplay();
+        File image = storeImage();
+        //send image to url
+        ImageContainer container = new ImageContainer(urlStr, image);
+        CallAPI backgroundTask = new CallAPI();
+        backgroundTask.execute(container);
     }
 
     @Override
@@ -158,6 +170,26 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
 
     private void captureImage() {
         mCamera.takePicture(null, null, this);
+    }
+
+    private File storeImage(){
+        String directoryPath = getApplicationContext().getFilesDir().getAbsolutePath();
+
+        String strFilePath = directoryPath + "image1";
+        try {
+            FileOutputStream fos = new FileOutputStream(strFilePath);
+
+            fos.write(mCameraData);
+            fos.close();
+        }
+        catch(FileNotFoundException ex)   {
+            System.out.println("FileNotFoundException : " + ex);
+        }
+        catch(IOException ioe)  {
+            System.out.println("IOException : " + ioe);
+        }
+
+        return new File(strFilePath);
     }
 
     private void setupImageCapture() {

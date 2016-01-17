@@ -1,82 +1,84 @@
 package cs499.parkin.linkscan;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
+import com.android.internal.http.multipart.MultipartEntity;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
+import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by parkin on 1/11/2016.
  */
-public class CallAPI extends AsyncTask<URL, String, String> {
+public class CallAPI extends AsyncTask<ImageContainer, String, String> {
 
     @Override
-    protected String doInBackground(URL... url) {
-
-        try {
-            // curl_init and url
-            HttpURLConnection con = (HttpURLConnection) url[0].openConnection();
-
-            String key = "apikey";
-            String value = "";
-            setupPostConnection(con);
-            setupValues(con, key, value);
-
-
-            DataOutputStream output = new DataOutputStream(con.getOutputStream());
-            output.writeBytes(postData);
-            output.close();
-
-            // "Post data send ... waiting for reply");
-            int code = con.getResponseCode(); // 200 = HTTP_OK
-            System.out.println("Response    (Code):" + code);
-            System.out.println("Response (Message):" + con.getResponseMessage());
-
-            // read the response
-            DataInputStream input = new DataInputStream(con.getInputStream());
-            int c;
-            StringBuilder resultBuf = new StringBuilder();
-            while ((c = input.read()) != -1) {
-                resultBuf.append((char) c);
-            }
-            input.close();
-
-            return resultBuf.toString();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    protected void setupPostConnection(HttpURLConnection connection){
-        try{
-            connection.setRequestMethod("POST");
-            connection.setInstanceFollowRedirects(true);
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-    }
-    protected void setupValues(HttpURLConnection connection, String key, String value){
-
-        connection.setRequestProperty(key, value);
+    protected String doInBackground(ImageContainer... container) {
+        String json = postImage(container[0].getUrl(), container[0].getFile());
+        return json;
     }
 
     protected void onPostExecute(String result) {
-
+        System.out.println("JSON:" + result);
     }
 
+    protected static String postImage(String urlToPost, File image) {
+        try{
+            SSLContextBuilder sslbuilder = new SSLContextBuilder();
+            sslbuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                    sslbuilder.build());
+            CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+
+            HttpPost uploadFile = new HttpPost(urlToPost);
+
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.addTextBody("apikey", "helloworld");
+            builder.addTextBody("language", "eng");
+            builder.addBinaryBody("file", image, ContentType.APPLICATION_OCTET_STREAM, "file.jpg");
+            HttpEntity multipart = builder.build();
+
+            uploadFile.setEntity(multipart);
+
+            CloseableHttpResponse response = httpClient.execute(uploadFile);
+            HttpEntity responseEntity = response.getEntity();
+
+            if(response.getEntity().getContentLength() == 0){
+                return null;
+            }
+
+            StringBuilder sb = new StringBuilder();
+
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(response.getEntity().getContent()), 65728);
+            String line = null;
+
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            return sb.toString();
+        }
+        catch (IOException e) { e.printStackTrace(); }
+        catch (Exception e) { e.printStackTrace(); }
+
+        return null;
+    }
 }

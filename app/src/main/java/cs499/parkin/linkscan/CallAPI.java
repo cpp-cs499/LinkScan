@@ -28,15 +28,19 @@ import java.net.URL;
  * Created by parkin on 1/11/2016.
  */
 public class CallAPI extends AsyncTask<ImageContainer, String, String> {
-
+    private String jsonReturnStr = "";
     @Override
     protected String doInBackground(ImageContainer... container) {
         String json = postImage(container[0].getUrl(), container[0].getFile());
+        jsonReturnStr = json;
         return json;
     }
 
     protected void onPostExecute(String result) {
-        System.out.println("JSON:" + result);
+        DataHolder holder = new DataHolder();
+
+        holder.setData(jsonReturnStr);
+        holder.setProcessing(false);
     }
 
     protected static String postImage(String urlToPost, File image) {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -143,13 +144,27 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         //send image to url
         ImageContainer container = new ImageContainer(urlStr, image);
         CallAPI backgroundTask = new CallAPI();
+        DataHolder holder = new DataHolder();
+        holder.setProcessing(true);
         backgroundTask.execute(container);
+
+        //wait for process to finish
+        try {
+            backgroundTask.get(5000, TimeUnit.MILLISECONDS);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        //start new activity
+        startLinksActivity();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         if (mCamera != null) {
             try {
+                //might be on a per phone basis
+                mCamera.setDisplayOrientation(90);
                 mCamera.setPreviewDisplay(holder);
                 if (mIsCapturing) {
                     mCamera.startPreview();
@@ -208,5 +223,9 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         mCameraImage.setVisibility(View.VISIBLE);
         mCaptureImageButton.setText("Recapture Image");
         mCaptureImageButton.setOnClickListener(mRecaptureImageButtonClickListener);
+    }
+
+    private void startLinksActivity(){
+        startActivity(new Intent(CameraActivity.this, LinksActivity.class));
     }
 }

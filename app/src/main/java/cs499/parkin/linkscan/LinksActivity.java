@@ -5,9 +5,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
-public class LinksActivity extends AppCompatActivity {
+public class LinksActivity extends AppCompatActivity implements AsyncTaskInterface{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,14 +17,24 @@ public class LinksActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getJsonData();
+        runCallAPI();
+    }
+    private void runCallAPI(){
+        CallAPI backgroundTask = new CallAPI(this);
+        backgroundTask.execute(ImageContainer.getInstance());
     }
 
     private void getJsonData(){
 
-        //get data
-        DataHolder holder = new DataHolder();
-        System.out.println("HOLDER JSON: " + holder.getData());
+        System.out.println("HOLDER JSON: " + ImageContainer.getJsonResponse());
     }
 
+    @Override
+    public void onEventCompleted(){
+        getJsonData();
+    }
+    @Override
+    public void onEventFailed(){
+        Log.w("CallAPI", "Callback is null");
+    }
 }

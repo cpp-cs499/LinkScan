@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
 
         //test sending image to url
         String urlStr = "https://api.ocr.space/Parse/Image";
+
         startImageCapture();
     }
 

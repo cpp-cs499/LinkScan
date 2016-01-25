@@ -29,6 +29,12 @@ import java.net.URL;
  */
 public class CallAPI extends AsyncTask<ImageContainer, String, String> {
     private String jsonReturnStr = "";
+    AsyncTaskInterface callback;
+
+    public CallAPI(AsyncTaskInterface cb){
+        callback = cb;
+    }
+
     @Override
     protected String doInBackground(ImageContainer... container) {
         String json = postImage(container[0].getUrl(), container[0].getFile());
@@ -37,14 +43,19 @@ public class CallAPI extends AsyncTask<ImageContainer, String, String> {
     }
 
     protected void onPostExecute(String result) {
-        DataHolder holder = new DataHolder();
 
-        holder.setData(jsonReturnStr);
-        holder.setProcessing(false);
+        ImageContainer.setJsonResponse(jsonReturnStr);
+
+        if(callback != null) {
+            callback.onEventCompleted();
+        }else{
+            callback.onEventFailed();
+        }
     }
 
     protected static String postImage(String urlToPost, File image) {
         try{
+            //httpd variables
             SSLContextBuilder sslbuilder = new SSLContextBuilder();
             sslbuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
@@ -64,14 +75,14 @@ public class CallAPI extends AsyncTask<ImageContainer, String, String> {
             CloseableHttpResponse response = httpClient.execute(uploadFile);
             HttpEntity responseEntity = response.getEntity();
 
-            if(response.getEntity().getContentLength() == 0){
+            if(responseEntity.getContentLength() == 0){
                 return null;
             }
 
             StringBuilder sb = new StringBuilder();
 
             BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(response.getEntity().getContent()), 65728);
+                    new BufferedReader(new InputStreamReader(responseEntity.getContent()), 65728);
             String line = null;
 
             while ((line = reader.readLine()) != null) {

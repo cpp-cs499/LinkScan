@@ -6,18 +6,35 @@ import java.net.URL;
 /**
  * Created by parkin on 1/16/2016.
  */
-public class ImageContainer {
-    String postUrl;
-    File image;
 
-    public ImageContainer(String url, File image){
-        this.postUrl = url;
-        this.image = image;
+//Singleton of Image
+public class ImageContainer {
+    static ImageContainer container = new ImageContainer();
+    static String postUrl;
+    static File image;
+    static String jsonResponse;
+
+    private ImageContainer(){}
+
+    public static ImageContainer getInstance(){
+        return container;
     }
-    public String getUrl(){
+    public static void setImageContainer(String url, File inImage){
+        postUrl = url;
+        image = inImage;
+    }
+    public static void setJsonResponse(String json){
+        jsonResponse = json;
+    }
+
+    public static String getUrl(){
         return postUrl;
     }
-    public File getFile(){
+    public static File getFile(){
         return image;
     }
+    public static String getJsonResponse(){
+        return jsonResponse;
+    }
+
 }

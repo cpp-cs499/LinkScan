@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.SurfaceHolder;
@@ -141,19 +142,10 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         mCameraData = data;
         setupImageDisplay();
         File image = storeImage();
-        //send image to url
-        ImageContainer container = new ImageContainer(urlStr, image);
-        CallAPI backgroundTask = new CallAPI();
-        DataHolder holder = new DataHolder();
-        holder.setProcessing(true);
-        backgroundTask.execute(container);
 
-        //wait for process to finish
-        try {
-            backgroundTask.get(5000, TimeUnit.MILLISECONDS);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        //send image to url
+        ImageContainer container = ImageContainer.getInstance();
+        ImageContainer.setImageContainer(urlStr, image);
 
         //start new activity
         startLinksActivity();

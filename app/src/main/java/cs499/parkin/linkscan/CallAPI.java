@@ -67,6 +67,7 @@ public class CallAPI extends AsyncTask<ImageContainer, String, String> {
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
             builder.addTextBody("apikey", "helloworld");
             builder.addTextBody("language", "eng");
+            //builder.addTextBody("isOverlayRequired", "true");
             builder.addBinaryBody("file", image, ContentType.APPLICATION_OCTET_STREAM, "file.jpg");
             HttpEntity multipart = builder.build();
 

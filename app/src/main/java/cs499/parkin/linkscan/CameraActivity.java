@@ -10,11 +10,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.media.ExifInterface;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -155,8 +158,13 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         if (mCamera != null) {
             try {
-                //might be on a per phone basis
+                //set orientation to portrait and change the display orientation
+                Camera.Parameters parameters = mCamera.getParameters();
+                parameters.set("orientation", "portrait");
+                parameters.setRotation(90);
+                mCamera.setParameters(parameters);
                 mCamera.setDisplayOrientation(90);
+
                 mCamera.setPreviewDisplay(holder);
                 if (mIsCapturing) {
                     mCamera.startPreview();
@@ -182,7 +190,8 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
     private File storeImage(){
         String directoryPath = getApplicationContext().getFilesDir().getAbsolutePath();
 
-        String strFilePath = directoryPath + "image1";
+        String strFilePath = directoryPath + "/image";
+        Log.i("LOG", "Writing image to " + strFilePath);
         try {
             FileOutputStream fos = new FileOutputStream(strFilePath);
 

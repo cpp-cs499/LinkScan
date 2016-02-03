@@ -9,10 +9,11 @@ import java.net.URL;
 
 //Singleton of Image
 public class ImageContainer {
-    static ImageContainer container = new ImageContainer();
-    static String postUrl;
-    static File image;
-    static String jsonResponse;
+    private static ImageContainer container = new ImageContainer();
+    private static String postUrl;
+    private static File image;
+    private static String jsonResponse;
+    private static boolean usingAPI = true;
 
     private ImageContainer(){}
 
@@ -36,5 +37,7 @@ public class ImageContainer {
     public static String getJsonResponse(){
         return jsonResponse;
     }
+    public static boolean getUsingRestAPI(){ return usingAPI;}
+    public static void setUsingRestAPI(boolean bol) {usingAPI = bol;}
 
 }

@@ -54,20 +54,6 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         }
     };
 
-    private OnClickListener mDoneButtonClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mCameraData != null) {
-                Intent intent = new Intent();
-                intent.putExtra(EXTRA_CAMERA_DATA, mCameraData);
-                setResult(RESULT_OK, intent);
-            } else {
-                setResult(RESULT_CANCELED);
-            }
-            finish();
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,9 +70,6 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
 
         mCaptureImageButton = (Button) findViewById(R.id.capture_image_button);
         mCaptureImageButton.setOnClickListener(mCaptureImageButtonClickListener);
-
-        final Button doneButton = (Button) findViewById(R.id.done_button);
-        doneButton.setOnClickListener(mDoneButtonClickListener);
 
         mIsCapturing = true;
 
@@ -147,7 +130,7 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         File image = storeImage();
 
         //send image to url
-        ImageContainer container = ImageContainer.getInstance();
+        //ImageContainer container = ImageContainer.getInstance();
         ImageContainer.setImageContainer(urlStr, image);
 
         //start new activity

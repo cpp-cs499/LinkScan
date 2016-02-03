@@ -5,11 +5,6 @@
     android:background="#999999"
     android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Capture Image" />
-
     <FrameLayout
         android:id="@+id/camera_frame"
         android:layout_width="match_parent"
@@ -25,26 +20,21 @@
             android:id="@+id/preview_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/capture_image_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Capture Image" />
+        </LinearLayout>
     </FrameLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/capture_image_button"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="Capture Image" />
-
-        <Button
-            android:id="@+id/done_button"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="Done" />
-    </LinearLayout>
 
 </LinearLayout>

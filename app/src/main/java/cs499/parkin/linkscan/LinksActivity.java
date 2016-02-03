@@ -23,8 +23,27 @@ public class LinksActivity extends AppCompatActivity implements AsyncTaskInterfa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_links);
 
-        runCallAPI();
+        //check if internet is up
+        if(Device.haveNetworkConnection(this)) {
+            Log.i("LOG", "Network connection is up.");
+
+            ImageContainer.setUsingRestAPI(true);
+            runCallAPI();
+        }else{
+            //internet is not up!!
+            Log.i("LOG", "Network connection is down.");
+
+            ImageContainer.setUsingRestAPI(false);
+            runImageProcessor();
+        }
     }
+    private void runImageProcessor(){
+        Log.i("LOG", "Running ImageProcessor");
+
+        ImageProcessor backgroundTask = new ImageProcessor(this);
+        backgroundTask.execute(ImageContainer.getInstance());
+    }
+
     private void runCallAPI(){
         Log.i("LOG", "Running CallAPI to communicate with OCR REST interface");
         CallAPI backgroundTask = new CallAPI(this);
@@ -87,7 +106,7 @@ public class LinksActivity extends AppCompatActivity implements AsyncTaskInterfa
         }
 
         ArrayList<String> arrList = new ArrayList<String>();
-        String[] schemes = {"http", "https"};
+        String[] schemes = {"http", "https", "www"};
         UrlValidator urlValidator = new UrlValidator(schemes);
 
         for(int i = 0; i < input.length; i++) {

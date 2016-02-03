@@ -13,6 +13,8 @@ dependencies {
     compile('commons-validator:commons-validator:1.4.0') {
         exclude module: "commons-beanutils"
     }
+    compile 'com.rmtheis:tess-two:5.4.1'
+    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta3'
 }
 
 android {

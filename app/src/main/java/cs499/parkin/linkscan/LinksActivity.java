@@ -5,10 +5,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
+import com.squareup.okhttp.RequestBody;
+
 import org.apache.commons.validator.UrlValidator;
 import org.json.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import cs499.parkin.linkscan.data.ImageData;
+import cs499.parkin.linkscan.data.ImageWords;
+import cs499.parkin.linkscan.data.Lines;
+import cs499.parkin.linkscan.data.ParsedResults;
+import cs499.parkin.linkscan.data.TextOverlay;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 
 public class LinksActivity extends AppCompatActivity implements AsyncTaskInterface{
@@ -46,8 +64,58 @@ public class LinksActivity extends AppCompatActivity implements AsyncTaskInterfa
 
     private void runCallAPI(){
         Log.i("LOG", "Running CallAPI to communicate with OCR REST interface");
-        CallAPI backgroundTask = new CallAPI(this);
-        backgroundTask.execute(ImageContainer.getInstance());
+        /*CallAPI backgroundTask = new CallAPI(this);
+        backgroundTask.execute(ImageContainer.getInstance());*/
+        OcrAPIService service;
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.ocr.space")
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build();
+        service = retrofit.create(OcrAPIService.class);
+
+        //static variables
+        String apikey = "helloworld";
+        String lang = "eng";
+        String overlay = "false";
+        MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
+        File imageFile = new File("file.jpg");
+        //RequestBody requestBody = RequestBody.create(MEDIA_TYPE_JPG, imageFile);
+        RequestBody requestBody = new MultipartBuilder()
+                .type(MultipartBuilder.FORM)
+                .addFormDataPart("apikey", apikey)
+                .addFormDataPart("language", lang)
+                .addFormDataPart("file", "file.jpg",
+                        RequestBody.create(MEDIA_TYPE_JPG, imageFile))
+                .build();
+
+        //make the api call
+        Call<ImageData> call = service.postImageData(requestBody);
+        call.enqueue(new Callback<ImageData>(){
+            @Override
+            public void onResponse(Call<ImageData> call, Response<ImageData> response) {
+                ImageData data = response.body();
+
+                List<ParsedResults> results = data.getParsedResults();
+
+                for(ParsedResults result : results){
+                    TextOverlay overlay = result.getTextOverlay();
+
+                    for(Lines line : overlay.getLines()){
+                        for(ImageWords word : line.getWords()){
+                            Log.i("CONTENTS", word.getWordText());
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ImageData> call, Throwable t) {
+                Log.e("API", "Something went wrong!");
+            }
+        });
+
     }
 
     private String[] parseJsonData(){

@@ -24,6 +24,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import cs499.parkin.linkscan.data.ImageData;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+
 /**
  * Created by parkin on 1/11/2016.
  */
@@ -52,8 +61,12 @@ public class CallAPI extends AsyncTask<ImageContainer, String, String> {
             callback.onEventFailed();
         }
     }
+    protected static String postImage(String urlToPost, File image){
 
-    protected static String postImage(String urlToPost, File image) {
+        return "";
+    }
+
+    protected static String postImageLegacy(String urlToPost, File image) {
         try{
             //httpd variables
             SSLContextBuilder sslbuilder = new SSLContextBuilder();

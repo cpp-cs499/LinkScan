@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.RequestBody;
@@ -45,32 +46,25 @@ public class LinksActivity extends AppCompatActivity implements AsyncTaskInterfa
         if(Device.haveNetworkConnection(this)) {
             Log.i("LOG", "Network connection is up.");
 
-            ImageContainer.setUsingRestAPI(true);
             runCallAPI();
         }else{
             //internet is not up!!
             Log.i("LOG", "Network connection is down.");
 
-            ImageContainer.setUsingRestAPI(false);
-            runImageProcessor();
         }
-    }
-    private void runImageProcessor(){
-        Log.i("LOG", "Running ImageProcessor");
-
-        ImageProcessor backgroundTask = new ImageProcessor(this);
-        backgroundTask.execute(ImageContainer.getInstance());
     }
 
     private void runCallAPI(){
         Log.i("LOG", "Running CallAPI to communicate with OCR REST interface");
-        /*CallAPI backgroundTask = new CallAPI(this);
-        backgroundTask.execute(ImageContainer.getInstance());*/
+        CallAPI backgroundTask = new CallAPI(this);
+        backgroundTask.execute(ImageContainer.getInstance());
+        /*
         OcrAPIService service;
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.ocr.space")
-                .addConverterFactory(JacksonConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()
+                        .setPropertyNamingStrategy(new OcrNamingStrategy())))
                 .build();
         service = retrofit.create(OcrAPIService.class);
 
@@ -115,41 +109,79 @@ public class LinksActivity extends AppCompatActivity implements AsyncTaskInterfa
                 Log.e("API", "Something went wrong!");
             }
         });
-
+        */
     }
 
     private String[] parseJsonData(){
-        Log.i("LOG", "Parsing JSON data");
-        if(ImageContainer.getJsonResponse() != null){
-            Log.i("LOG", ImageContainer.getJsonResponse());
-        }else{
-            Log.i("LOG", "JsonResponse return is null");
-        }
+        Log.i("LOG", ImageContainer.getJsonResponse());
+        /*ObjectMapper objectMapper = new ObjectMapper();
+        //first letter is capitalized on json variables which is not standard
+        objectMapper.setPropertyNamingStrategy(new OcrNamingStrategy());
         try {
-            JSONObject jsonObj = new JSONObject(ImageContainer.getJsonResponse());
-            JSONArray jsonArr = jsonObj.getJSONArray(TAG_RESULTS);
-            String errorMessage = "";
-            String exitCode = "";
-            String parsedText = "";
+            ImageData imageData = objectMapper.readValue(ImageContainer.getJsonResponse(), ImageData.class);
 
-            //getting the text
-            if(jsonArr.length() > 0) {
-                JSONObject obj = jsonArr.getJSONObject(0);
-                parsedText = getInnerText(obj.toString(), TAG_TEXT);
-                errorMessage = obj.getString(TAG_ERROR_MESSAGE);
-                exitCode = obj.getString(TAG_EXIT_CODE);
+            //print all words on image
+            for(ParsedResults result : imageData.getParsedResults()){
+                int exitCode = result.getFileParseExitCode();
+                Log.i("ParsedResult.Code", exitCode + "");
+                Log.i("ParsedResult.Text", result.getParsedText());
+                Log.i("ParsedResult.Details", result.getErrorDetails());
+                Log.i("ParsedResult.Message", result.getErrorMessage());
 
-                String[] possibleURLs = parsedText.split("\\\\r?\\\\n");
+                if(exitCode == 1) {
+                    TextOverlay overlay = result.getTextOverlay();
 
-                //logs
-                Log.i("LOG", "Exit Code: " + exitCode);
-                Log.i("LOG", "Error from JSON data: \n" + errorMessage);
-                Log.i("LOG", "Text from JSON data: \n" + parsedText);
+                    /*List<Lines> linesList = result.getTextOverlay().getLines();
 
-                return possibleURLs;
+                    for (Lines line : linesList) {
+                        for (ImageWords words : line.getWords()) {
+                            Log.i("Words", words.getWordText());
+                        }
+                    }*/
+                /*}
             }
-        }catch(JSONException e){
-            Log.e("JSON Error", e.getMessage());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+        return null;
+    }
+
+    private String[] parseJsonDataLegacy(){
+        Log.i("LOG", "Parsing JSON data");
+        if(ImageContainer.getJsonResponse() != null) {
+            Log.i("LOG", ImageContainer.getJsonResponse());
+
+            try {
+                JSONObject jsonObj = new JSONObject(ImageContainer.getJsonResponse());
+                JSONArray jsonArr = jsonObj.getJSONArray(TAG_RESULTS);
+                String errorMessage = "";
+                String exitCode = "";
+                String parsedText = "";
+
+                //getting the text
+                if (jsonArr.length() > 0) {
+                    JSONObject obj = jsonArr.getJSONObject(0);
+                    parsedText = getInnerText(obj.toString(), TAG_TEXT);
+                    errorMessage = obj.getString(TAG_ERROR_MESSAGE);
+                    exitCode = obj.getString(TAG_EXIT_CODE);
+
+                    String[] possibleURLs = parsedText.split("\\\\r?\\\\n");
+
+                    //logs
+                    Log.i("LOG", "Exit Code: " + exitCode);
+                    Log.i("LOG", "Error from JSON data: \n" + errorMessage);
+                    Log.i("LOG", "Text from JSON data: \n" + parsedText);
+
+                    return possibleURLs;
+                }
+            } catch (JSONException e) {
+                Log.e("JSON Error", e.getMessage());
+            }
+        }
+        else{
+            Log.i("LOG", "JsonResponse return is null");
         }
 
         return null;
@@ -202,14 +234,16 @@ public class LinksActivity extends AppCompatActivity implements AsyncTaskInterfa
         txtProcessing.setText(ImageContainer.getJsonResponse());
 
         //get text from image
-        String[] possibleURLs = parseJsonData();
+        /*String[] possibleURLs = parseJsonData();
 
         String[] validURLs = getValidURLs(possibleURLs);
 
         System.out.println("Valid URLs: ");
-        for(int i = 0; i < validURLs.length; i++){
-            System.out.println(validURLs[i]);
-        }
+        if(validURLs != null) {
+            for (int i = 0; i < validURLs.length; i++) {
+                System.out.println(validURLs[i]);
+            }
+        }*/
 
     }
     @Override

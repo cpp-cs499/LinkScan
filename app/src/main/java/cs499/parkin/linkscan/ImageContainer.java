@@ -13,7 +13,6 @@ public class ImageContainer {
     private static String postUrl;
     private static File image;
     private static String jsonResponse;
-    private static boolean usingAPI = true;
 
     private ImageContainer(){}
 
@@ -37,7 +36,5 @@ public class ImageContainer {
     public static String getJsonResponse(){
         return jsonResponse;
     }
-    public static boolean getUsingRestAPI(){ return usingAPI;}
-    public static void setUsingRestAPI(boolean bol) {usingAPI = bol;}
 
 }

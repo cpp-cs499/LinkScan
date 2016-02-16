@@ -32,7 +32,9 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
 
     private static final String KEY_IS_CAPTURING = "is_capturing";
 
-    private String urlStr = "https://api.ocr.space";
+    //private String urlStr = "https://api.ocr.space/Parse/Image";
+    private String urlStr = "http://ec2-52-36-80-70.us-west-2.compute.amazonaws.com:8080" +
+                            "/OCRServlet-1/ocrtest";
     private Camera mCamera;
     private ImageView mCameraImage;
     private SurfaceView mCameraPreview;

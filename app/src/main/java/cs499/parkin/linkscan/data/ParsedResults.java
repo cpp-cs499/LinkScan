@@ -4,49 +4,49 @@ package cs499.parkin.linkscan.data;
  * Created by parkin on 2/6/2016.
  */
 public class ParsedResults {
-    private TextOverlay textOverlay;
-    private int fileParseExitCode;
-    private String parsedText;
-    private String errorMessage;
-    private String errorDetails;
+    private TextOverlay TextOverlay;
+    private int FileParseExitCode;
+    private String ParsedText;
+    private String ErrorMessage;
+    private String ErrorDetails;
 
-    public TextOverlay getTextOverlay() {
-        return textOverlay;
+    public cs499.parkin.linkscan.data.TextOverlay getTextOverlay() {
+        return TextOverlay;
     }
 
-    public void setTextOverlay(TextOverlay textOverlay) {
-        this.textOverlay = textOverlay;
+    public void setTextOverlay(cs499.parkin.linkscan.data.TextOverlay textOverlay) {
+        TextOverlay = textOverlay;
     }
 
     public int getFileParseExitCode() {
-        return fileParseExitCode;
+        return FileParseExitCode;
     }
 
     public void setFileParseExitCode(int fileParseExitCode) {
-        this.fileParseExitCode = fileParseExitCode;
+        FileParseExitCode = fileParseExitCode;
     }
 
     public String getParsedText() {
-        return parsedText;
+        return ParsedText;
     }
 
     public void setParsedText(String parsedText) {
-        this.parsedText = parsedText;
+        ParsedText = parsedText;
     }
 
     public String getErrorMessage() {
-        return errorMessage;
+        return ErrorMessage;
     }
 
     public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+        ErrorMessage = errorMessage;
     }
 
     public String getErrorDetails() {
-        return errorDetails;
+        return ErrorDetails;
     }
 
     public void setErrorDetails(String errorDetails) {
-        this.errorDetails = errorDetails;
+        ErrorDetails = errorDetails;
     }
 }

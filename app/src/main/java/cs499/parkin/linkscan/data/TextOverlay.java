@@ -7,24 +7,24 @@ import java.util.List;
  */
 public class TextOverlay {
 
-    private List<Lines> lines;
-    private boolean hasOverlay;
+    private List<Lines> Lines;
+    private boolean HasOverlay;
     private String Message;
 
-    public List<Lines> getLines() {
-        return lines;
+    public List<cs499.parkin.linkscan.data.Lines> getLines() {
+        return Lines;
     }
 
-    public void setLines(List<Lines> lines) {
-        this.lines = lines;
+    public void setLines(List<cs499.parkin.linkscan.data.Lines> lines) {
+        Lines = lines;
     }
 
     public boolean isHasOverlay() {
-        return hasOverlay;
+        return HasOverlay;
     }
 
     public void setHasOverlay(boolean hasOverlay) {
-        this.hasOverlay = hasOverlay;
+        HasOverlay = hasOverlay;
     }
 
     public String getMessage() {

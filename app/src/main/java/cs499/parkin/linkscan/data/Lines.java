@@ -7,31 +7,31 @@ import java.util.List;
  */
 public class Lines {
 
-    private List<ImageWords> words;
-    private int maxHeight;
-    private int minTop;
+    private List<ImageWords> Words;
+    private int MaxHeight;
+    private int MinTop;
 
     public List<ImageWords> getWords() {
-        return words;
+        return Words;
     }
 
     public void setWords(List<ImageWords> words) {
-        this.words = words;
+        Words = words;
     }
 
     public int getMaxHeight() {
-        return maxHeight;
+        return MaxHeight;
     }
 
     public void setMaxHeight(int maxHeight) {
-        this.maxHeight = maxHeight;
+        MaxHeight = maxHeight;
     }
 
     public int getMinTop() {
-        return minTop;
+        return MinTop;
     }
 
     public void setMinTop(int minTop) {
-        this.minTop = minTop;
+        MinTop = minTop;
     }
 }

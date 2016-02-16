@@ -5,49 +5,49 @@ package cs499.parkin.linkscan.data;
  */
 public class ImageWords {
 
-    private String wordText;
-    private int left;
-    private int top;
-    private int height;
-    private int width;
+    private String WordText;
+    private int Left;
+    private int Top;
+    private int Height;
+    private int Width;
 
     public String getWordText() {
-        return wordText;
+        return WordText;
     }
 
     public void setWordText(String wordText) {
-        this.wordText = wordText;
+        WordText = wordText;
     }
 
     public int getLeft() {
-        return left;
+        return Left;
     }
 
     public void setLeft(int left) {
-        this.left = left;
+        Left = left;
     }
 
     public int getTop() {
-        return top;
+        return Top;
     }
 
     public void setTop(int top) {
-        this.top = top;
+        Top = top;
     }
 
     public int getHeight() {
-        return height;
+        return Height;
     }
 
     public void setHeight(int height) {
-        this.height = height;
+        Height = height;
     }
 
     public int getWidth() {
-        return width;
+        return Width;
     }
 
     public void setWidth(int width) {
-        this.width = width;
+        Width = width;
     }
 }

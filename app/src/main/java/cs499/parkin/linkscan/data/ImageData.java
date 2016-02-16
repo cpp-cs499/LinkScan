@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by parkin on 2/6/2016.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = false)
 public class ImageData {
     private List<ParsedResults> parsedResults;
     private int ocrExitCode;

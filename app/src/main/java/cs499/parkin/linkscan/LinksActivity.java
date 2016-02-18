@@ -1,33 +1,32 @@
 package cs499.parkin.linkscan;
 
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.RequestBody;
+import com.google.gson.Gson;
 
 import org.apache.commons.validator.UrlValidator;
 import org.json.*;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import cs499.parkin.linkscan.data.ImageData;
-import cs499.parkin.linkscan.data.ImageWords;
-import cs499.parkin.linkscan.data.Lines;
-import cs499.parkin.linkscan.data.ParsedResults;
-import cs499.parkin.linkscan.data.TextOverlay;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+import cs499.parkin.linkscan.data.ImageDataHolder;
 
 
 public class LinksActivity extends AppCompatActivity implements AsyncTaskInterface{
@@ -54,168 +53,86 @@ public class LinksActivity extends AppCompatActivity implements AsyncTaskInterfa
         }
     }
 
-    private void runCallAPI(){
+    private void runCallAPI() {
         Log.i("LOG", "Running CallAPI to communicate with OCR REST interface");
         CallAPI backgroundTask = new CallAPI(this);
         backgroundTask.execute(ImageContainer.getInstance());
-        /*
-        OcrAPIService service;
+    }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.ocr.space")
-                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()
-                        .setPropertyNamingStrategy(new OcrNamingStrategy())))
-                .build();
-        service = retrofit.create(OcrAPIService.class);
+    private void buildLayout(ImageDataHolder holder){
+        Log.i("LOG", "Updating links layout");
+        List<String> textList = holder.getTextList();
+        int totalNum = textList.size();
 
-        //static variables
-        String apikey = "helloworld";
-        String lang = "eng";
-        String overlay = "false";
-        MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
-        File imageFile = new File("file.jpg");
-        //RequestBody requestBody = RequestBody.create(MEDIA_TYPE_JPG, imageFile);
-        RequestBody requestBody = new MultipartBuilder()
-                .type(MultipartBuilder.FORM)
-                .addFormDataPart("apikey", apikey)
-                .addFormDataPart("language", lang)
-                .addFormDataPart("file", "file.jpg",
-                        RequestBody.create(MEDIA_TYPE_JPG, imageFile))
-                .build();
+        LinearLayout container = (LinearLayout) findViewById(R.id.linkContainer);
+        int previousId = 0;
 
-        //make the api call
-        Call<ImageData> call = service.postImageData(requestBody);
-        call.enqueue(new Callback<ImageData>(){
+        for(int i = 0; i < totalNum; i++){
+            RelativeLayout layout = new RelativeLayout(this);
+            RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(
+                                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                ViewGroup.LayoutParams.WRAP_CONTENT);
+            final TextView textBox = new TextView(this);
+
+            //set the text
+            textBox.setText(textList.get(i));
+            textBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupActionBox(textBox.getText().toString());
+                }
+            });
+
+            //set below previous text
+            if(i != 0) {
+                p.addRule(RelativeLayout.BELOW, previousId);
+            }
+
+            layout.setLayoutParams(p);
+
+            //add to the containers
+            previousId = View.generateViewId();
+            layout.addView(textBox);
+            layout.setPadding(5,5,5,5);
+            layout.setId(previousId);
+
+            container.addView(layout);
+        }
+
+
+    }
+
+    private void popupActionBox(String text){
+
+        //final String inputString = text;
+        final String inputString = "https://google.com";
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
-            public void onResponse(Call<ImageData> call, Response<ImageData> response) {
-                ImageData data = response.body();
+            public void onClick(DialogInterface dialog, int which) {
+                try{
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(inputString));
+                            startActivity(browserIntent);
+                            break;
 
-                List<ParsedResults> results = data.getParsedResults();
-
-                for(ParsedResults result : results){
-                    TextOverlay overlay = result.getTextOverlay();
-
-                    for(Lines line : overlay.getLines()){
-                        for(ImageWords word : line.getWords()){
-                            Log.i("CONTENTS", word.getWordText());
-                        }
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText("Image Text", inputString);
+                            clipboard.setPrimaryClip(clip);
+                            break;
                     }
+                }catch(Exception e){
+                    e.printStackTrace();
                 }
 
             }
+        };
 
-            @Override
-            public void onFailure(Call<ImageData> call, Throwable t) {
-                Log.e("API", "Something went wrong!");
-            }
-        });
-        */
-    }
-
-    private String[] parseJsonData(){
-        Log.i("LOG", ImageContainer.getJsonResponse());
-        /*ObjectMapper objectMapper = new ObjectMapper();
-        //first letter is capitalized on json variables which is not standard
-        objectMapper.setPropertyNamingStrategy(new OcrNamingStrategy());
-        try {
-            ImageData imageData = objectMapper.readValue(ImageContainer.getJsonResponse(), ImageData.class);
-
-            //print all words on image
-            for(ParsedResults result : imageData.getParsedResults()){
-                int exitCode = result.getFileParseExitCode();
-                Log.i("ParsedResult.Code", exitCode + "");
-                Log.i("ParsedResult.Text", result.getParsedText());
-                Log.i("ParsedResult.Details", result.getErrorDetails());
-                Log.i("ParsedResult.Message", result.getErrorMessage());
-
-                if(exitCode == 1) {
-                    TextOverlay overlay = result.getTextOverlay();
-
-                    /*List<Lines> linesList = result.getTextOverlay().getLines();
-
-                    for (Lines line : linesList) {
-                        for (ImageWords words : line.getWords()) {
-                            Log.i("Words", words.getWordText());
-                        }
-                    }*/
-                /*}
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        return null;
-    }
-
-    private String[] parseJsonDataLegacy(){
-        Log.i("LOG", "Parsing JSON data");
-        if(ImageContainer.getJsonResponse() != null) {
-            Log.i("LOG", ImageContainer.getJsonResponse());
-
-            try {
-                JSONObject jsonObj = new JSONObject(ImageContainer.getJsonResponse());
-                JSONArray jsonArr = jsonObj.getJSONArray(TAG_RESULTS);
-                String errorMessage = "";
-                String exitCode = "";
-                String parsedText = "";
-
-                //getting the text
-                if (jsonArr.length() > 0) {
-                    JSONObject obj = jsonArr.getJSONObject(0);
-                    parsedText = getInnerText(obj.toString(), TAG_TEXT);
-                    errorMessage = obj.getString(TAG_ERROR_MESSAGE);
-                    exitCode = obj.getString(TAG_EXIT_CODE);
-
-                    String[] possibleURLs = parsedText.split("\\\\r?\\\\n");
-
-                    //logs
-                    Log.i("LOG", "Exit Code: " + exitCode);
-                    Log.i("LOG", "Error from JSON data: \n" + errorMessage);
-                    Log.i("LOG", "Text from JSON data: \n" + parsedText);
-
-                    return possibleURLs;
-                }
-            } catch (JSONException e) {
-                Log.e("JSON Error", e.getMessage());
-            }
-        }
-        else{
-            Log.i("LOG", "JsonResponse return is null");
-        }
-
-        return null;
-    }
-
-    public String getInnerText(String jsonMessage, String tag){
-        String[] elements = jsonMessage.split(":");
-
-        for(int i =0; i < elements.length; i++){
-            System.out.println(i + ": " + elements[i]);
-            if(elements[i].contains("\"" + tag + "\"")){
-                if(i < elements.length-1)
-                    return elements[i+1];
-            }
-        }
-        return "";
-    }
-
-    public String[] getValidURLs(String[] input){
-        if(input == null){
-            return null;
-        }
-
-        ArrayList<String> arrList = new ArrayList<String>();
-        String[] schemes = {"http", "https", "www"};
-        UrlValidator urlValidator = new UrlValidator(schemes);
-
-        for(int i = 0; i < input.length; i++) {
-            if (urlValidator.isValid(input[i])) {
-                arrList.add(input[i]);
-            }
-        }
-
-        return arrList.toArray(new String[arrList.size()]);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Action?").setPositiveButton("Open in browser", dialogClickListener)
+                .setNegativeButton("Copy to Clipboard", dialogClickListener).show();
     }
 
     @Override
@@ -230,20 +147,18 @@ public class LinksActivity extends AppCompatActivity implements AsyncTaskInterfa
 
     @Override
     public void onEventCompleted(){
-        TextView txtProcessing = (TextView) findViewById(R.id.txtProcessing);
-        txtProcessing.setText(ImageContainer.getJsonResponse());
 
-        //get text from image
-        /*String[] possibleURLs = parseJsonData();
+        //get JSON response
+        Gson gson = new Gson();
+        ImageDataHolder holder = gson.fromJson(ImageContainer.getJsonResponse(),
+                                               ImageDataHolder.class);
 
-        String[] validURLs = getValidURLs(possibleURLs);
+        if(holder.getExitCode() != -1) {
+            buildLayout(holder);
+        }else{
+            Toast.makeText(this, "Unable to get text from the image!", Toast.LENGTH_LONG);
+        }
 
-        System.out.println("Valid URLs: ");
-        if(validURLs != null) {
-            for (int i = 0; i < validURLs.length; i++) {
-                System.out.println(validURLs[i]);
-            }
-        }*/
 
     }
     @Override

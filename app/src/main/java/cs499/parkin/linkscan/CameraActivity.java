@@ -69,6 +69,15 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         final SurfaceHolder surfaceHolder = mCameraPreview.getHolder();
         surfaceHolder.addCallback(this);
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        mCameraPreview.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Camera.Parameters params = mCamera.getParameters();
+
+                params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                mCamera.setParameters(params);
+            }
+        });
 
         mCaptureImageButton = (Button) findViewById(R.id.capture_image_button);
         mCaptureImageButton.setOnClickListener(mCaptureImageButtonClickListener);

@@ -11,19 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-
-import org.apache.commons.validator.UrlValidator;
-import org.json.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import cs499.parkin.linkscan.data.ImageDataHolder;

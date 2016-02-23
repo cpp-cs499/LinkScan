@@ -4,19 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
-import android.media.ExifInterface;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -141,7 +136,6 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         File image = storeImage();
 
         //send image to url
-        //ImageContainer container = ImageContainer.getInstance();
         ImageContainer.setImageContainer(urlStr, image);
 
         //start new activity

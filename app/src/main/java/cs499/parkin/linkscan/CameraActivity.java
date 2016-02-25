@@ -12,13 +12,16 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class CameraActivity extends Activity implements PictureCallback, SurfaceHolder.Callback {
@@ -34,6 +37,7 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
     private ImageView mCameraImage;
     private SurfaceView mCameraPreview;
     private Button mCaptureImageButton;
+    private Button resendButton;
     private byte[] mCameraData;
     private boolean mIsCapturing;
 
@@ -48,6 +52,13 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         @Override
         public void onClick(View v) {
             setupImageCapture();
+        }
+    };
+
+    private OnClickListener resendButtonClickListner = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            resendImage();
         }
     };
 
@@ -76,6 +87,9 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
 
         mCaptureImageButton = (Button) findViewById(R.id.capture_image_button);
         mCaptureImageButton.setOnClickListener(mCaptureImageButtonClickListener);
+
+        resendButton = (Button) findViewById(R.id.resend_image_button);
+        resendButton.setOnClickListener(resendButtonClickListner);
 
         mIsCapturing = true;
 
@@ -201,6 +215,9 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         mCameraPreview.setVisibility(View.VISIBLE);
         mCamera.startPreview();
         mCaptureImageButton.setText("Capture Image");
+        resendButton.setVisibility(View.INVISIBLE);
+        resendButton.setLayoutParams(
+                new LinearLayout.LayoutParams(0,0));
         mCaptureImageButton.setOnClickListener(mCaptureImageButtonClickListener);
     }
 
@@ -211,7 +228,15 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         mCameraPreview.setVisibility(View.INVISIBLE);
         mCameraImage.setVisibility(View.VISIBLE);
         mCaptureImageButton.setText("Recapture Image");
+        resendButton.setVisibility(View.VISIBLE);
+        resendButton.setLayoutParams(
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
         mCaptureImageButton.setOnClickListener(mRecaptureImageButtonClickListener);
+    }
+
+    private void resendImage(){
+        startLinksActivity();
     }
 
     private void startLinksActivity(){

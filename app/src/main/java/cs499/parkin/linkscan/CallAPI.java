@@ -1,6 +1,7 @@
 package cs499.parkin.linkscan;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -38,6 +39,7 @@ public class CallAPI extends AsyncTask<ImageContainer, String, String> {
 
     protected void onPostExecute(String result) {
 
+        Log.i("LOG", jsonReturnStr);
         ImageContainer.setJsonResponse(jsonReturnStr);
 
         if(callback != null) {

@@ -6,19 +6,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.Layout;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -93,7 +95,42 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
 
         mIsCapturing = true;
 
+        //Check to see if image was sent from another app
+        Intent intent = getIntent();
+        if(intent != null){
+            String action = intent.getAction();
+            String type = intent.getType();
 
+            if(Intent.ACTION_SEND.equals(action) && type != null) {
+                if(type.startsWith("image/")) {
+                    handleSendImage(intent);
+                }
+            }
+        }
+    }
+    private void handleSendImage(Intent intent){
+        Bundle extras = intent.getExtras();
+        if(extras.containsKey(Intent.EXTRA_STREAM)) {
+            Uri imageUri = (Uri)extras.getParcelable(Intent.EXTRA_STREAM);
+            String scheme = imageUri.getScheme();
+
+            if(scheme.equals("content")) {
+                String mimeType = intent.getType();
+                ContentResolver contentResolver = getContentResolver();
+                Cursor cursor = contentResolver.query(imageUri, null, null, null, null);
+                cursor.moveToFirst();
+
+                //send image to url
+                String filePath = cursor.getString(
+                        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
+                ImageContainer.setImageContainer(urlStr, new File(filePath));
+
+                mCameraImage.setImageURI(imageUri);
+
+                //start new activity
+                startLinksActivity();
+            }
+        }
     }
 
     @Override
@@ -147,7 +184,7 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
     public void onPictureTaken(byte[] data, Camera camera) {
         mCameraData = data;
         setupImageDisplay();
-        File image = storeImage();
+        File image = storeImageFromCamera();
 
         //send image to url
         ImageContainer.setImageContainer(urlStr, image);
@@ -189,7 +226,7 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         mCamera.takePicture(null, null, this);
     }
 
-    private File storeImage(){
+    private File storeImageFromCamera(){
         String directoryPath = getApplicationContext().getFilesDir().getAbsolutePath();
 
         String strFilePath = directoryPath + "/image";

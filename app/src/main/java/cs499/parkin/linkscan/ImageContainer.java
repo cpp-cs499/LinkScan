@@ -14,7 +14,10 @@ public class ImageContainer {
     private static File image;
     private static String jsonResponse;
 
-    private ImageContainer(){}
+    private ImageContainer(){
+        jsonResponse = "";
+        postUrl = "";
+    }
 
     public static ImageContainer getInstance(){
         return container;

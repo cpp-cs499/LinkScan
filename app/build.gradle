@@ -14,11 +14,6 @@ dependencies {
     compile('commons-validator:commons-validator:1.4.0') {
         exclude module: "commons-beanutils"
     }
-    compile 'com.rmtheis:tess-two:5.4.1'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta3'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.1'
-    compile 'com.squareup.retrofit2:converter-jackson:2.0.0-beta4'
-    compile 'com.squareup.okhttp:okhttp:2.7.2'
     compile 'com.google.code.gson:gson:1.7.2'
 }
 
@@ -31,7 +26,7 @@ android {
         applicationId "cs499.parkin.linkscan"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 1
+        versionCode 3
         versionName "1.0"
     }
     buildTypes {

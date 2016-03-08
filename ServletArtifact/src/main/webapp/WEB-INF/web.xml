@@ -1,0 +1,15 @@
+<web-app id="simple" version="3.0">
+    <welcome-file-list>
+        <welcome-file>hello.html</welcome-file>
+    </welcome-file-list>
+    
+    <servlet>
+	    <servlet-name>ConnectionHandler</servlet-name>
+	    <servlet-class>ocr.ConnectionHandler</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+    	<servlet-name>ConnectionHandler</servlet-name>
+    	<url-pattern>/ocrtest</url-pattern>
+    </servlet-mapping>
+</web-app>

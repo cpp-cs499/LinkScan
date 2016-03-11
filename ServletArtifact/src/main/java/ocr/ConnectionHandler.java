@@ -188,20 +188,13 @@ public class ConnectionHandler extends HttpServlet implements Servlet {
     		StringTokenizer st = new StringTokenizer(textList.get(i));
     		while(st.hasMoreTokens()){
     			String text = st.nextToken();
-	    		if(isValidUrl(text)){
+	    		if(URLChecker.isValid(text)){
 	    			outputList.add(text);
 	    		}
     		}
     	}
     	
     	return outputList;
-    }
-    
-    private boolean isValidUrl(String text){
-    	UrlValidator validator = new UrlValidator();
-    	
-    	return validator.isValid(text);
-    	
     }
     
     private List<String> getText(String jsonMessage){

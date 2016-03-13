@@ -62,7 +62,7 @@ public class ConnectionHandler extends HttpServlet implements Servlet {
     throws ServletException, IOException {
     	try{
     		String jsonText;
-    		String filename = "images/" + UUID.randomUUID() + ".jpg";
+    		String filename = "/tmp/" + UUID.randomUUID() + ".jpg";
     		
     		writeImage(request, filename);
     		

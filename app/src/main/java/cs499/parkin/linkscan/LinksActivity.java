@@ -157,8 +157,6 @@ public class LinksActivity extends AppCompatActivity implements AsyncTaskInterfa
     public void onEventCompleted(){
         progress.dismiss();
 
-        Log.i("LOG", ImageContainer.getJsonResponse());
-
         //get JSON response
         Gson gson = new Gson();
         try {

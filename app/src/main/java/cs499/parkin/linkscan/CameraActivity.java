@@ -33,8 +33,9 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
     private static final String KEY_IS_CAPTURING = "is_capturing";
 
     //private String urlStr = "https://api.ocr.space/Parse/Image";
-    private String urlStr = "http://ec2-52-36-80-70.us-west-2.compute.amazonaws.com:8080" +
-                            "/OCRServlet-1/ocrtest";
+    /*private String OCR_URL = "http://ec2-52-36-80-70.us-west-2.compute.amazonaws.com:8080" +
+                            "/OCRServlet-1/ocrtest";*/
+    final static private String OCR_URL = "http://ocr-eb.us-west-2.elasticbeanstalk.com/ocrtest";
     private Camera mCamera;
     private ImageView mCameraImage;
     private SurfaceView mCameraPreview;
@@ -123,7 +124,7 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
                 //send image to url
                 String filePath = cursor.getString(
                         cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-                ImageContainer.setImageContainer(urlStr, new File(filePath));
+                ImageContainer.setImageContainer(OCR_URL, new File(filePath));
 
                 mCameraImage.setImageURI(imageUri);
 
@@ -187,7 +188,7 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
         File image = storeImageFromCamera();
 
         //send image to url
-        ImageContainer.setImageContainer(urlStr, image);
+        ImageContainer.setImageContainer(OCR_URL, image);
 
         //start new activity
         startLinksActivity();

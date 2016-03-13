@@ -157,25 +157,21 @@ public class LinksActivity extends AppCompatActivity implements AsyncTaskInterfa
     public void onEventCompleted(){
         progress.dismiss();
 
+        Log.i("LOG", ImageContainer.getJsonResponse());
+
         //get JSON response
         Gson gson = new Gson();
-        ImageDataHolder holder = gson.fromJson(ImageContainer.getJsonResponse(),
-                                               ImageDataHolder.class);
+        try {
+            ImageDataHolder holder = gson.fromJson(ImageContainer.getJsonResponse(),
+                    ImageDataHolder.class);
 
-        if(holder.getExitCode() != -1) {
-            buildLayout(holder);
-        }else{
-            final Activity activity = this;
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Unable to get links from the image!")
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            activity.finish();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
+            if (holder.getExitCode() != -1) {
+                buildLayout(holder);
+            } else {
+                displayNoLinksAlert(this);
+            }
+        }catch(Exception e){
+            displayNoLinksAlert(this);
         }
 
 
@@ -183,5 +179,19 @@ public class LinksActivity extends AppCompatActivity implements AsyncTaskInterfa
     @Override
     public void onEventFailed(){
         Log.w("CallAPI", "Callback is null");
+    }
+
+    public void displayNoLinksAlert(Activity activity){
+        final Activity localActivity = activity;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Unable to get links from the image!")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        localActivity.finish();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

@@ -1,0 +1,19 @@
+package ocr;
+
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+
+public class MainTester {
+	final static String AWS_ACCESS_ID = "";
+	final static String AWS_ACCESS_KEY = "";
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		BasicAWSCredentials awsCreds = new BasicAWSCredentials(AWS_ACCESS_ID, AWS_ACCESS_KEY);
+		AmazonS3 s3Client = new AmazonS3Client(awsCreds);
+		
+	}
+
+}

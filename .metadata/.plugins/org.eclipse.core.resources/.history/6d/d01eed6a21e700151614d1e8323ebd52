@@ -1,0 +1,13 @@
+package ocr;
+
+import org.apache.commons.validator.UrlValidator;
+
+public class URLChecker {
+
+	public static boolean isValidUrl(String input){
+
+    	UrlValidator validator = new UrlValidator();
+    	
+    	return validator.isValid(input);
+	}
+}

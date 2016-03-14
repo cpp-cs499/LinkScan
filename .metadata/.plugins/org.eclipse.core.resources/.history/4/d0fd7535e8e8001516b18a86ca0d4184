@@ -1,0 +1,9 @@
+package ocr;
+
+public class S3Connector {
+	final static String AWS_ACCESS_ID = "AKIAI5C7RJ7KSGK5MDYQ";
+	final static String AWS_ACCESS_KEY = "9i3DwRjJCPPsdnQWeG+KEGzvWb04nAmw93NiJHlo";
+	final static String existingBucketName = "testbucket-sap2313";
+
+	public void storeFile()
+}

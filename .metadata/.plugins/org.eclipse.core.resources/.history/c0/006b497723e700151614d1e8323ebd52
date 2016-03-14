@@ -1,0 +1,21 @@
+import org.junit.Test;
+
+public class ValidURLTester{
+
+	String[] validUrls = {"http://google.com",
+						  "http://www.google.com",
+						  "www.google.com",
+						  "https://google.com",
+						  "https://www.google.com"
+						 };
+	String[] invalidUrls = {};
+	
+	@Test
+	public void testUrls(){
+	}
+	
+	@Test
+	public void testEmails(){
+		
+	}
+}

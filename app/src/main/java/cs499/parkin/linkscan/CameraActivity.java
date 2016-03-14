@@ -35,7 +35,9 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
     //private String urlStr = "https://api.ocr.space/Parse/Image";
     /*private String OCR_URL = "http://ec2-52-36-80-70.us-west-2.compute.amazonaws.com:8080" +
                             "/OCRServlet-1/ocrtest";*/
-    final static private String OCR_URL = "http://ocr-eb.us-west-2.elasticbeanstalk.com/ocrtest";
+    //final static private String OCR_URL = "http://ocr-eb.us-west-2.elasticbeanstalk.com/ocrtest";
+    private static String OCR_URL = "";
+
     private Camera mCamera;
     private ImageView mCameraImage;
     private SurfaceView mCameraPreview;
@@ -71,6 +73,15 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
 
         setContentView(R.layout.activity_camera);
 
+        //process passed values
+        OCR_URL = getIntent().getExtras().getString("OCR_URL");
+        boolean imagePassed = getIntent().getExtras().getBoolean("INTENT_INPUT");
+
+        if(OCR_URL == ""){
+            //log error
+            Log.e("ERROR", "OCR_URL is null!");
+        }
+
         mCameraImage = (ImageView) findViewById(R.id.camera_image_view);
         mCameraImage.setVisibility(View.INVISIBLE);
 
@@ -96,41 +107,12 @@ public class CameraActivity extends Activity implements PictureCallback, Surface
 
         mIsCapturing = true;
 
-        //Check to see if image was sent from another app
-        Intent intent = getIntent();
-        if(intent != null){
-            String action = intent.getAction();
-            String type = intent.getType();
+        //if image was passed
+        if(imagePassed){
+            Uri passedUri = Uri.parse(getIntent().getExtras().getString("IMAGE_URI"));
+            mCameraImage.setImageURI(passedUri);
 
-            if(Intent.ACTION_SEND.equals(action) && type != null) {
-                if(type.startsWith("image/")) {
-                    handleSendImage(intent);
-                }
-            }
-        }
-    }
-    private void handleSendImage(Intent intent){
-        Bundle extras = intent.getExtras();
-        if(extras.containsKey(Intent.EXTRA_STREAM)) {
-            Uri imageUri = (Uri)extras.getParcelable(Intent.EXTRA_STREAM);
-            String scheme = imageUri.getScheme();
-
-            if(scheme.equals("content")) {
-                String mimeType = intent.getType();
-                ContentResolver contentResolver = getContentResolver();
-                Cursor cursor = contentResolver.query(imageUri, null, null, null, null);
-                cursor.moveToFirst();
-
-                //send image to url
-                String filePath = cursor.getString(
-                        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-                ImageContainer.setImageContainer(OCR_URL, new File(filePath));
-
-                mCameraImage.setImageURI(imageUri);
-
-                //start new activity
-                startLinksActivity();
-            }
+            startLinksActivity();
         }
     }
 

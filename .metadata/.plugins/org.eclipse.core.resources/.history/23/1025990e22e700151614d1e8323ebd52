@@ -1,0 +1,27 @@
+package ocr;
+
+import javax.mail.internet.InternetAddress;
+
+import org.apache.commons.validator.UrlValidator;
+
+public class URLChecker {
+	
+	public static boolean isValid(String input){
+		
+		return isValidUrl(input) || isEmail(input);
+	}
+
+	public static boolean isValidUrl(String input){
+		//checks to see if the text is a valid url
+
+    	UrlValidator validator = new UrlValidator();
+    	
+    	return validator.isValid(input);
+	}
+	
+	public static boolean isEmail(String input){
+		//checks to see if input in an email
+		InternetAddress emailAddr = new InternetAddress(input);
+		
+	}
+}

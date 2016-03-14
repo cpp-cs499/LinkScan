@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="com.amazonaws.services.s3.AmazonS3"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.s3.AmazonS3Client"/>
+<fullyQualifiedTypeName name="com.amazonaws.auth.DefaultAWSCredentialsProviderChain"/>
+<fullyQualifiedTypeName name="com.amazonaws.auth.BasicAWSCredentials"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.s3.model.InitiateMultipartUploadRequest"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.s3.model.InitiateMultipartUploadResult"/>
+<fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.s3.model.UploadPartRequest"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.s3.model.CompleteMultipartUploadRequest"/>
+<fullyQualifiedTypeName name="com.amazonaws.services.s3.model.AbortMultipartUploadRequest"/>
+<fullyQualifiedTypeName name="javax.mail.internet.InternetAddress"/>
+<fullyQualifiedTypeName name="org.junit.Test"/>
+<fullyQualifiedTypeName name="ocr.URLChecker"/>
+<fullyQualifiedTypeName name="java.net.URL"/>
+<fullyQualifiedTypeName name="java.net.MalformedURLException"/>
+<fullyQualifiedTypeName name="org.apache.commons.validator.EmailValidator"/>
+</qualifiedTypeNameHistroy>

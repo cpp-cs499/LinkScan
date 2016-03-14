@@ -1,0 +1,13 @@
+package ocr;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+
+public class MainTester {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		AmazonS3 s3Client = new AmazonS3Client();
+	}
+
+}

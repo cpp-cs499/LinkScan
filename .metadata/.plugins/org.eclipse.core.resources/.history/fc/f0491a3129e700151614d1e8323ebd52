@@ -1,0 +1,48 @@
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import ocr.URLChecker;
+
+public class ValidURLTester{
+
+	String[] validUrls = {"http://google.com",
+						  "http://www.google.com",
+						  "www.google.com",
+						  "https://google.com",
+						  "https://www.google.com"};
+	String[] invalidUrls = {"http//google.com",
+							"google.com",
+							"htp://google.com",
+							"htps://google.com",
+							"ww.google.com",
+							"www.google.com.",
+							"www .google.com"};
+	
+	String[] validEmails = {"user@gmail.com"};
+	String[] invalidEmails = {"user @gmail.com"};
+	
+	@Test
+	public void testUrls(){
+		
+		for(String url : validUrls){
+			assertTrue(URLChecker.isValidUrl(url));
+		}
+		
+		for(String url : invalidUrls){
+			assertFalse(URLChecker.isValidUrl(url));
+		}
+	}
+	
+	@Test
+	public void testEmails(){
+
+		for(String email : validEmails){
+			assertTrue(URLChecker.isEmail(email));
+		}
+		
+		for(String email : invalidEmails){
+			assertFalse(URLChecker.isEmail(email));
+		}
+	}
+}

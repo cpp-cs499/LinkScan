@@ -1,0 +1,42 @@
+package ocr;
+
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
+import org.apache.commons.validator.UrlValidator;
+
+public class URLChecker {
+	
+	public static boolean isValid(String input){
+		
+		return isValidUrl(input) || isEmail(input);
+	}
+
+	public static boolean isValidUrl(String input){
+		//checks to see if the text is a valid url
+		
+		//using apache
+		String[] acceptedSchemes = { "https", "http" };
+    	UrlValidator validator = new UrlValidator(acceptedSchemes);
+    	
+    	boolean result = validator.isValid(input);
+    	
+    	if(result){
+    		return true;
+    	}
+    	
+    	return result;
+	}
+	
+	public static boolean isEmail(String input){
+		//checks to see if input in an email
+		boolean result = true;
+		try {
+			InternetAddress emailAddr = new InternetAddress(input);
+			emailAddr.validate();
+		} catch (AddressException e) {
+			result = false;
+		}
+		return result;
+	}
+}
